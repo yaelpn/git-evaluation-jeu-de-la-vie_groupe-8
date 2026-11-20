@@ -1,4 +1,23 @@
 import random
+import sys
+
+
+def get_cellule(grille, i, j, periodique=False):
+
+    nb_lignes = len(grille)
+    nb_cols = len(grille[0])
+
+    if periodique:
+        
+        i = i % nb_lignes
+        j = j % nb_cols
+    else:
+        
+        if not (0 <= i < nb_lignes and 0 <= j < nb_cols):
+            return 0
+
+    return grille[i][j]
+
 
 from lib import write_grid
 

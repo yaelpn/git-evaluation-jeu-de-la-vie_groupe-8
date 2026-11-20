@@ -1,5 +1,10 @@
 import random
 import sys
+import os
+
+from lib import write_grid
+
+import argparse
 
 
 def Generation_de_grille(lignes,colonnes, seed_val,densite):
@@ -42,11 +47,6 @@ def get_cellule(grille, i, j, periodique=False):
             return 0
 
     return grille[i][j]
-
-
-from lib import write_grid
-
-import argparse
 
 
 def compte_voisins(grille, x, y):
@@ -100,19 +100,45 @@ def parse_args():
         parser.error("Le nombre d'itération ne peut pas être négatif")
     return args
 
-def main():
-    nb_cells = 50
 
-    rng = random.Random(4200)
-
-    matrix = [
-        [rng.choice([0, 1]) for _ in range(nb_cells)]
-        for _ in range(nb_cells)
-    ]
-
-    iter = 0
-    filename = f"outputs/grid_{iter:04d}.png"
+def sortie_image(matrix, iteration, dossier):
+    os.makedirs(dossier, exist_ok=True)
+    filename = os.path.join(dossier, f"grid_{iteration:04d}.png")
     write_grid(matrix=matrix, filename=filename)
+
+def sortie_texte(matrix, iteration):
+    print(f"iteration: {iteration}")
+    for ligne in matrix:
+        print(" ".join(str(c) for c in ligne))
+
+
+def main():
+    args = parse_args()
+    matrix = Generation_de_grille(args.nb_cells, args.seed)  
+    
+    
+    if args.output_type == "image":
+        sortie_image(matrix, 0, args.output_directory)
+        for iteration in range(1, args.max_iterations + 1):
+            matrix = calculer_generation_suivante(matrix, args.periodic)
+            sortie_image(matrix, iteration, args.output_directory)
+    else:
+        for _ in range(args.max_iterations):
+            matrix = calculer_generation_suivante(matrix, args.periodic)
+        sortie_texte(matrix, args.max_iterations)
+        
+        #nb_cells = 50
+    
+        #rng = random.Random(4200)
+    
+        #matrix = [
+            #[rng.choice([0, 1]) for _ in range(nb_cells)]
+            #for _ in range(nb_cells)
+        #]
+    
+        #iter = 0
+        #filename = f"outputs/grid_{iter:04d}.png"
+        #write_grid(matrix=matrix, filename=filename)
 
 if __name__ == "__main__":
     main()

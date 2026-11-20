@@ -6,7 +6,6 @@ from lib import write_grid
 
 import argparse
 
-
 def Generation_de_grille(lignes,colonnes, seed_val,densite):
     rng= random.Random(seed_val)
     grille=[1 if rng.random() < densite else 0 for _ in range(colonnes)for _ in range(lignes)]
@@ -49,14 +48,20 @@ def get_cellule(grille, i, j, periodique=False):
     return grille[i][j]
 
 
-def compte_voisins(grille, x, y):
-    voisins = 0
+
+from lib import write_grid
+
+import argparse
+
+
+def compte_voisins(grille, x, y,periodique=False):
+
     lignes = len(grille)
     colonnes = len(grille[0])
     for i in range(x - 1, x + 2):
         for j in range(y - 1, y + 2):
-            if (i, j) != (x, y) and 0 <= i < lignes and 0 <= j < colonnes:
-                voisins += grille[i][j]
+            if (i, j) != (x, y):
+                voisins += get_cellule(grille, i, j, periodique)
     return voisins
 
 def nouvelle_valeur_cellule(etat_actuel, nb_voisins):
@@ -65,13 +70,13 @@ def nouvelle_valeur_cellule(etat_actuel, nb_voisins):
     else:
         return 1 if nb_voisins == 3 else 0
 
-def calculer_generation_suivante(grille):
+def calculer_generation_suivante(grille,periodique=False):
     lignes = len(grille)
     colonnes = len(grille[0])
     nouvelle_grille = [[0 for _ in range(colonnes)] for _ in range(lignes)]
     for i in range(lignes):
         for j in range(colonnes):
-            nb_voisins = compte_voisins(grille, i, j)
+            nb_voisins = compte_voisins(grille, i, j, periodique)
             nouvelle_grille[i][j] = nouvelle_valeur_cellule(grille[i][j], nb_voisins)
     return nouvelle_grille
 
@@ -162,7 +167,7 @@ def main():
             matrix = calculer_generation_suivante(matrix, args.periodic)
         sortie_texte(matrix, args.max_iterations)
         
-        #nb_cells = 50
+        #Snb_cells = 50
     
         #rng = random.Random(4200)
     

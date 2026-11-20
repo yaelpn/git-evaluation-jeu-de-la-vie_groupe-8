@@ -6,10 +6,6 @@ from lib import write_grid
 
 import argparse
 
-def Generation_de_grille(lignes,colonnes, seed_val,densite):
-    rng= random.Random(seed_val)
-    grille=[1 if rng.random() < densite else 0 for _ in range(colonnes)for _ in range(lignes)]
-    return grille
 
 def lire_grille_stdin():
     lignes = [l.split() for l in sys.stdin.read().splitlines() if l.strip()]

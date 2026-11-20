@@ -1,6 +1,10 @@
 import random
 import sys
 
+def Generation_de_grille(lignes,colonnes, seed_val,densite):
+    rng= random.Random(seed_val)
+    grille=[1 if rng.random() < densite else 0 for _ in range(colonnes)for _ in range(lignes)]
+    return grille
 
 def get_cellule(grille, i, j, periodique=False):
 
